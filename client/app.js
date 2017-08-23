@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    var socket = io.connect('http://localhost');
+    var socket = io.connect(window.location.origin);
     var canvas = document.getElementById('canvas-video');
     var context = canvas.getContext('2d');
     var img = new Image();
