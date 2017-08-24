@@ -33,7 +33,7 @@
 
     setInterval((code) => {
         streamVideo(() => console.log(`Child process exited with code ${code}`));
-    }, 61 * 60 * 1000);
+    }, 5 * 60 * 1000);
 
     module.exports = camera;
 })();
