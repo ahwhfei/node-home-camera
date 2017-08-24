@@ -9,8 +9,9 @@
 
     function spawnFfmpeg(exitCallback) {
         const current = new Date();
-        const input = `${settings.outputImageFolder}/${current.toLocaleDateString().split('-').join('')}-${current.getHours() - 1}-%d.jpg`;
-        const output = `${settings.outputVideoFolder}/${current.toLocaleDateString().split('-').join('')}-${current.getHours() - 1}.mp4`;
+        const oneHourBefore = new Date(current - 60*60*1000);
+        const input = `${settings.outputImageFolder}/${oneHourBefore.toLocaleDateString().split('-').join('')}-${oneHourBefore.getHours()}-%d.jpg`;
+        const output = `${settings.outputVideoFolder}/${oneHourBefore.toLocaleDateString().split('-').join('')}-${oneHourBefore.getHours()}.mp4`;
         const args = ['-y', '-framerate', settings.outputFps, '-i', input, output];
 
         newFolder(settings.outputImageFolder);
