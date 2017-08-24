@@ -22,7 +22,10 @@
   "homepage": "https://github.com/ahwhfei/node-home-camera#readme",
   "dependencies": {
     "express": "^4.15.4",
+    "fluent-ffmpeg": "^2.1.2",
+    "mkdirp": "^0.5.1",
     "opencv": "^6.0.0",
+    "rimraf": "^2.6.1",
     "socket.io": "^2.0.3"
   }
 }

@@ -14,8 +14,8 @@
 
     // WebSocket Server
     const io = require('socket.io')(server);
-    // const socket = require('./socket');
     io.on('connection', require('./socket'));
+    io.on('disconnect', () => console.log('exit'));
 
     function normalizePort(val) {
         let port = +val;
