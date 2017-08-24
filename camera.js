@@ -31,8 +31,8 @@
         });
     }, camInterval);
 
-    setInterval((code) => {
-        streamVideo(() => console.log(`Child process exited with code ${code}`));
+    setInterval(() => {
+        streamVideo((code) => console.log(`Child process exited with code ${code}`));
     }, 5 * 60 * 1000);
 
     module.exports = camera;
