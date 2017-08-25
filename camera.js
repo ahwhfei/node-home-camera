@@ -34,11 +34,11 @@
             
             saveImage(im.toBuffer());
         });
-    }, camInterval);
 
-    setInterval(() => {
-        streamVideo();
-    }, 5 * 60 * 1000);
+        if (new Date().getMinutes() === 0) {
+            streamVideo();
+        }
+    }, camInterval);
 
     module.exports = camera;
 })();
