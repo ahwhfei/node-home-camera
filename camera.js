@@ -6,6 +6,7 @@
     const videoSettings = require('./video-settings');
     const saveImage = require('./save-image');
     const streamVideo = require('./stream-video');
+    const clients = require('./clients');
 
     const cameraId = 0;
     
@@ -27,12 +28,16 @@
                 throw err;
             }
             
+            for (const index in clients) {
+                clients[index].emit('frame', {buffer: im.toBuffer()});
+            }
+            
             saveImage(im.toBuffer());
         });
     }, camInterval);
 
     setInterval(() => {
-        streamVideo((code) => console.log(`Child process exited with code ${code}`));
+        streamVideo();
     }, 5 * 60 * 1000);
 
     module.exports = camera;
