@@ -7,7 +7,11 @@
     const settings = require('./video-settings');
     const newFolder = require('./new-folder');
 
+    let singleton = true;
+
     function spawnFfmpeg() {
+        if (!singleton) return;
+
         const current = new Date();
         const oneHourAgo = new Date(current - 60*60*1000);
         const input = `${settings.outputImageFolder}/${oneHourAgo.toLocaleDateString().split('-').join('')}-${oneHourAgo.getHours()}-%d.jpg`;
@@ -18,10 +22,12 @@
         newFolder(settings.outputVideoFolder);
 
         const ffmpeg = spawn('ffmpeg', args);
+        singleton = false;
 
         console.log('Spawning ffmpeg ' + args.join(' '));
 
         ffmpeg.on('exit', (code) => {
+            singleton = true;
             console.log(`Child process exited with code ${code}`);
             if (code) {
                 rimraf(input.replace('%d', '*'), (err) => err && console.log(err));
