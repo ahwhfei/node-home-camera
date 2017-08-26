@@ -4,12 +4,11 @@
     const fs = require('fs'); 
     const rimraf = require('rimraf');
 
-    const settings = require('./video-settings');
     const newFolder = require('./new-folder');
 
     let singleton = true;
 
-    function spawnFfmpeg() {
+    function spawnFfmpeg(settings) {
         if (!singleton) return;
 
         const current = new Date();

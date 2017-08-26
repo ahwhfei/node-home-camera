@@ -5,7 +5,8 @@
     
     const app = require('./app');
     let clients = require('./clients');
-    const camera = require('./camera');
+    const setupCamera = require('./camera');
+    const config = require('./video-settings');
     
     let port = normalizePort(process.env.PORT || '8080');
     app.set('port', port);
@@ -23,6 +24,9 @@
         clients[index] = socket;
     });
     io.on('disconnect', () => console.log('exit'));
+
+    setupCamera(config[0]);
+    setupCamera(config[1]);
 
     function normalizePort(val) {
         let port = +val;

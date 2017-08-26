@@ -1,13 +1,11 @@
 .container {
-    padding-top: 50px;
-  }
-  
-  .center {
-    text-align: center;
-  }
-  
-  #canvas-video {
-    width: 640px;
-    height: 480px;
-    border: 1px solid #ccc;
-  }
+  padding-top: 50px;
+}
+
+.center {
+  text-align: center;
+}
+
+canvas {
+  border: 1px solid #ccc;
+}
