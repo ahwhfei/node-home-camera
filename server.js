@@ -25,8 +25,9 @@
     });
     io.on('disconnect', () => console.log('exit'));
 
-    setupCamera(config[0]);
-    setupCamera(config[1]);
+    for (const c of config) {
+        setupCamera(c);
+    }
 
     function normalizePort(val) {
         let port = +val;
