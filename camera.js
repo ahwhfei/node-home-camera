@@ -3,6 +3,8 @@
 
     const cv = require('opencv');
     const request = require('request').defaults({encoding: null});
+    const Stream = require('stream');
+    const ffmpeg = require('fluent-ffmpeg');
 
     const saveImage = require('./save-image');
     const streamVideo = require('./stream-video');
@@ -30,7 +32,8 @@
         }, camInterval);
     }
 
-    function readCamera(config, camera, callback) {
+    function readCamera(config, stream, camera, callback) {
+        
         if (config.static) {
             request(config.camera, (error, response, body) => {
                 if (error || !response || response.statusCode !== 200) {
@@ -39,7 +42,7 @@
     
                 const contentType = response.headers['content-type'];
                 if (contentType === 'image/jpeg') {
-                    callback(config, body);
+                    callback(config, stream, body);
                 }
             })
         } else if (Number.isInteger(config.camera)) {
@@ -48,13 +51,28 @@
                     error && console.log(`Camera ${config.camera} opened failed`, error);
                 }
                 
-                callback(config, im.toBuffer());
+                callback(config, stream, im.toBuffer());
             });
         }
     }
 
     function setupCamera(config) {
         let camera;
+
+        let stream = new Stream.PassThrough();
+        // stream.pipe(process.stdout);
+        // streamVideo.recordVideoFromStream(stream);
+        ffmpeg().input(stream)
+            .save('./output_video/whff.mp4')
+            .on('error', (err) => {
+                console.log('An error occurred: ' + err.message);
+            })
+            .on('end', () => {
+                console.log('Processing finished !');
+            });
+
+        // ffmpeg('./file.mp4').size('320x240').save('./file_320x240.mp4');;
+
         if (Number.isInteger(config.camera)) {
             // initialize camera
             camera = new cv.VideoCapture(config.camera);
@@ -72,22 +90,31 @@
         const camInterval = 1000 / camFps;
 
         setInterval(() => {
-            readCamera(config, camera, processImage);
+            readCamera(config, stream, camera, processImage);
               
-            streamVideo(config);
+            // streamVideo(config);
         }, camInterval);
 
         return camera;
     }
 
-    function processImage(config, image) {
+    function createReadStream(stream, image) {
+        stream.push(image);
+        if (new Date().getMinutes()%3 === 0) {
+            stream.push(null);
+        }
+    }
+
+    function processImage(config, stream, image) {
         if (!image) return;
+
+        createReadStream(stream, image);
 
         // Send image to clients
         sendtoClients(config, image);
 
         // Save image to disk
-        saveImage(image, config);
+        // saveImage(image, config);
     }
 
     function sendtoClients(config, image) {
