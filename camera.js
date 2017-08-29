@@ -50,6 +50,8 @@
                 if (error) {
                     error && console.log(`Camera ${config.camera} opened failed`, error);
                 }
+
+                im.putText(new Date().toLocaleString(), 10, 20, 'HERSHEY_PLAIN', [255, 0, 0], 0.5, 1);
                 
                 callback(config, stream, im.toBuffer());
             });
@@ -60,18 +62,7 @@
         let camera;
 
         let stream = new Stream.PassThrough();
-        // stream.pipe(process.stdout);
-        // streamVideo.recordVideoFromStream(stream);
-        ffmpeg().input(stream)
-            .save('./output_video/whff.mp4')
-            .on('error', (err) => {
-                console.log('An error occurred: ' + err.message);
-            })
-            .on('end', () => {
-                console.log('Processing finished !');
-            });
-
-        // ffmpeg('./file.mp4').size('320x240').save('./file_320x240.mp4');;
+        streamVideo.recordVideoFromStream(config, stream);
 
         if (Number.isInteger(config.camera)) {
             // initialize camera
@@ -100,18 +91,15 @@
 
     function createReadStream(stream, image) {
         stream.push(image);
-        if (new Date().getMinutes()%3 === 0) {
-            stream.push(null);
-        }
     }
 
     function processImage(config, stream, image) {
         if (!image) return;
 
-        createReadStream(stream, image);
-
         // Send image to clients
         sendtoClients(config, image);
+
+        createReadStream(stream, image);
 
         // Save image to disk
         // saveImage(image, config);

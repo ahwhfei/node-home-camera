@@ -13,10 +13,24 @@
     // const settings = require('./video-settings');
     // spawnFfmpeg(settings[0]);
 
-    function recordVideoFromStream(stream) {
-        console.log('recordVideoFromStream');
-        ffmpeg().input(stream)
-            .output('./output_video/whf.mp4');
+    function getFfmpeg(settings, stream) {
+        return ffmpeg().input(stream)
+            .fps(settings.outputFps)
+            .save(`${settings.outputVideoFolder}/${new Date().toLocaleString().split('-').join('').split(':').join('')}.mp4`)
+            .duration(settings.outputVideoDuration)
+            .on('SIGINT', () => console.log('Ffmpeg Control C'))
+            .on('error', (err) => {
+                console.log('An error occurred: ' + err.message);
+            })
+            .on('end', () => {
+                getFfmpeg(settings, stream);
+            });
+    }
+
+    function recordVideoFromStream(settings, stream) {
+        newFolder(settings.outputVideoFolder);        
+        
+        const command = getFfmpeg(settings, stream);
     }
 
     function spawnFfmpeg(settings) {
