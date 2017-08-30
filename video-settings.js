@@ -15,6 +15,8 @@
         {
             id: 2,
             camera: 'http://192.168.31.59/image/jpeg.cgi',
+            username: '',
+            password: '',
             static: true,
             fps: 10,
             width: 640,

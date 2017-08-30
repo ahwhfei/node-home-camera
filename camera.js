@@ -35,16 +35,23 @@
     function readCamera(config, stream, camera, callback) {
         
         if (config.static) {
-            request(config.camera, (error, response, body) => {
-                if (error || !response || response.statusCode !== 200) {
-                    return;
-                }
-    
-                const contentType = response.headers['content-type'];
-                if (contentType === 'image/jpeg') {
-                    callback(config, stream, body);
-                }
-            })
+            request(config.camera, {
+                    'auth': {
+                        'user': config.username,
+                        'pass': config.password,
+                        'sendImmediately': false
+                    }
+                },
+                (error, response, body) => {
+                    if (error || !response || response.statusCode !== 200) {
+                        return;
+                    }
+        
+                    const contentType = response.headers['content-type'];
+                    if (contentType === 'image/jpeg') {
+                        callback(config, stream, body);
+                    }
+            });
         } else if (Number.isInteger(config.camera)) {
             camera.read(function (error, im) {
                 if (error) {
